@@ -1,0 +1,64 @@
+/* Estilos para landing page e modo escuro/light, quiz, leaderboard, microinterações, avatares, etc. */
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #181818 60%, #232323 100%);
+  color: #fafafa;
+  text-align: center;
+  animation: fadeInLanding 1s cubic-bezier(.45,1.6,.45,1);
+  z-index: 10;
+}
+.landing-logo {
+  width: 112px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 12px #f9d92355);
+}
+.landing-title {
+  font-size: 2.2rem;
+  color: #f9d923;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 900;
+  margin-bottom: 8px;
+  letter-spacing: 1.2px;
+}
+.landing-desc {
+  font-size: 1.14rem;
+  margin-bottom: 18px;
+  color: #fafafa;
+}
+.landing-highlight {
+  color: #f9d923;
+  font-weight: 700;
+}
+.landing-enter {
+  background: linear-gradient(90deg, #f9d923 70%, #f7b801 100%);
+  color: #181818;
+  font-weight: 900;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  padding: 13px 36px;
+  margin-bottom: 22px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px #f9d92344;
+  transition: background 0.2s, transform 0.2s;
+}
+.landing-enter:hover {
+  background: linear-gradient(90deg, #f7b801 60%, #f9d923 100%);
+  transform: scale(1.04);
+}
+.landing-footer {
+  font-size: 0.98rem;
+  color: #f9d923cc;
+  margin-top: 18px;
+  letter-spacing: 0.5px;
+}
+@keyframes fadeInLanding {
+  from { opacity: 0; transform: translateY(48px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modo escuro/light, quiz, leaderboard, avatares, microinterações etc. serão adicionados na sequência. */
