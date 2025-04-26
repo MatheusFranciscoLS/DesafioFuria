@@ -1,4 +1,36 @@
 /* Tema FURIA - Dark Mode */
+
+.furia-social-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 7px;
+}
+.furia-social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.furia-social-links a:hover {
+  background: #FFD60022;
+}
+.furia-social-links svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+  stroke: #FFD600;
+  transition: stroke 0.2s;
+}
+.furia-social-links a:hover svg {
+  stroke: #fffbe0;
+}
+
 body {
   min-height: 100vh;
   min-width: 100vw;

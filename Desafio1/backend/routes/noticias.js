@@ -20,18 +20,33 @@ async function authenticate(req, res, next) {
 }
 
 // GET notícias (com filtro opcional por modalidade)
-router.get('/', async (req, res) => {
-  const { modalidade } = req.query;
+const { resolveModalidade } = require('../utils/modalidadeSynonyms');
+
+const Joi = require('joi');
+const { validateModalidade } = require('../utils/validators');
+
+router.get('/', async (req, res, next) => {
+  const { modalidade, page = 1, limit = 20 } = req.query;
+  if (modalidade) {
+    const { error } = validateModalidade(modalidade);
+    if (error) return res.status(400).json({ erro: 'Modalidade inválida' });
+  }
+  const pageNum = parseInt(page, 10);
+  const limitNum = parseInt(limit, 10);
   try {
     let query = db.collection('noticias');
     if (modalidade) {
-      query = query.where('modalidade', '==', modalidade.toLowerCase());
+      const modKey = resolveModalidade(modalidade);
+      query = query.where('modalidade', '==', modKey);
     }
     const snapshot = await query.get();
-    const noticias = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json({ noticias });
+    let noticias = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // Paginação manual
+    const start = (pageNum - 1) * limitNum;
+    noticias = noticias.slice(start, start + limitNum);
+    res.json({ noticias, page: pageNum, limit: limitNum });
   } catch (e) {
-    res.status(500).json({ erro: 'Erro ao buscar notícias', detalhes: e.message });
+    next(e);
   }
 });
 

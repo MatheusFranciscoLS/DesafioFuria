@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../firebase');
 const admin = require('firebase-admin');
+const { modalidadeMap } = require('../utils/modalidadeSynonyms');
+const { fuzzySearchModalidade } = require('../utils/fuzzyModalidade');
 
 // Middleware de autenticação Firebase
 async function authenticate(req, res, next) {

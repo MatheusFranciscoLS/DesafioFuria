@@ -20,16 +20,30 @@ async function authenticate(req, res, next) {
 }
 
 // GET curiosidades por modalidade
-router.get('/:modalidade', async (req, res) => {
-  const mod = req.params.modalidade.toLowerCase();
+const { resolveModalidade } = require('../utils/modalidadeSynonyms');
+
+const Joi = require('joi');
+const { validateModalidade } = require('../utils/validators');
+
+router.get('/:modalidade', async (req, res, next) => {
+  const mod = resolveModalidade(req.params.modalidade);
+  const { page = 1, limit = 20 } = req.query;
+  const { error } = validateModalidade(mod);
+  if (error) return res.status(400).json({ erro: 'Modalidade inválida' });
+  const pageNum = parseInt(page, 10);
+  const limitNum = parseInt(limit, 10);
   try {
     const doc = await db.collection('curiosidades').doc(mod).get();
     if (!doc.exists) {
       return res.status(404).json({ erro: 'Modalidade não encontrada' });
     }
-    res.json({ curiosidades: doc.data().curiosidades });
+    let curiosidades = doc.data().curiosidades || [];
+    // Paginação manual
+    const start = (pageNum - 1) * limitNum;
+    curiosidades = curiosidades.slice(start, start + limitNum);
+    res.json({ curiosidades, page: pageNum, limit: limitNum });
   } catch (e) {
-    res.status(500).json({ erro: 'Erro ao buscar curiosidades', detalhes: e.message });
+    next(e);
   }
 });
 

@@ -20,8 +20,10 @@ async function authenticate(req, res, next) {
 }
 
 // GET elenco por modalidade
+const { resolveModalidade } = require('../utils/modalidadeSynonyms');
+
 router.get('/:modalidade', async (req, res) => {
-  const mod = req.params.modalidade.toLowerCase();
+  const mod = resolveModalidade(req.params.modalidade);
   console.log('Recebida requisição para elenco da modalidade:', mod);
   try {
     const doc = await db.collection('elenco').doc(mod).get();

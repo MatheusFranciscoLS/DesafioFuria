@@ -20,14 +20,24 @@ async function authenticate(req, res, next) {
 }
 
 // GET estatísticas de jogador
+const { resolveModalidade } = require('../utils/modalidadeSynonyms');
+
 router.get('/:jogador', async (req, res) => {
   const nick = req.params.jogador.toLowerCase();
+  const { modalidade } = req.query;
   try {
     const doc = await db.collection('estatisticas').doc(nick).get();
     if (!doc.exists) {
       return res.status(404).json({ erro: 'Jogador não encontrado' });
     }
-    res.json(doc.data());
+    const data = doc.data();
+    if (modalidade) {
+      const modKey = resolveModalidade(modalidade);
+      if (data.modalidade !== modKey) {
+        return res.status(404).json({ erro: 'Estatísticas para modalidade não encontradas' });
+      }
+    }
+    res.json(data);
   } catch (e) {
     res.status(500).json({ erro: 'Erro ao buscar estatísticas', detalhes: e.message });
   }

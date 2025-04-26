@@ -19,19 +19,34 @@ async function authenticate(req, res, next) {
   }
 }
 
+const Joi = require('joi');
+const { validateModalidade } = require('../utils/validators');
+
 // GET placares (com filtro opcional por modalidade)
-router.get('/', async (req, res) => {
-  const { modalidade } = req.query;
+const { resolveModalidade } = require('../utils/modalidadeSynonyms');
+
+router.get('/', async (req, res, next) => {
+  const { modalidade, page = 1, limit = 20 } = req.query;
+  if (modalidade) {
+    const { error } = validateModalidade(modalidade);
+    if (error) return res.status(400).json({ erro: 'Modalidade inválida' });
+  }
+  const pageNum = parseInt(page, 10);
+  const limitNum = parseInt(limit, 10);
   try {
     let query = db.collection('placares');
     if (modalidade) {
-      query = query.where('modalidade', '==', modalidade.toLowerCase());
+      const modKey = resolveModalidade(modalidade);
+      query = query.where('modalidade', '==', modKey);
     }
     const snapshot = await query.get();
-    const placares = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json({ placares });
+    let placares = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // Paginação manual
+    const start = (pageNum - 1) * limitNum;
+    placares = placares.slice(start, start + limitNum);
+    res.json({ placares, page: pageNum, limit: limitNum });
   } catch (e) {
-    res.status(500).json({ erro: 'Erro ao buscar placares', detalhes: e.message });
+    next(e);
   }
 });
 

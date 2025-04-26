@@ -31,6 +31,10 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json());
 
+// Rate limiting global
+const rateLimiter = require('./middleware/rateLimiter');
+app.use('/api/', rateLimiter);
+
 // Documentação Swagger
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -76,11 +80,9 @@ app.use((req, res, next) => {
   res.status(404).json({ erro: 'Endpoint não encontrado' });
 });
 
-// Tratamento global de erros
-app.use((err, req, res, next) => {
-  console.error('Erro global:', err.stack);
-  res.status(500).json({ erro: 'Erro interno do servidor', detalhes: err.message });
-});
+// Middleware de tratamento global de erros
+const errorHandler = require('./middleware/errorHandler');
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Servidor backend rodando na porta ${PORT}`);

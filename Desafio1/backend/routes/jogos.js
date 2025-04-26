@@ -20,18 +20,34 @@ async function authenticate(req, res, next) {
 }
 
 // GET jogos (com filtro opcional por modalidade)
-router.get('/', async (req, res) => {
-  const { modalidade } = req.query;
+const { resolveModalidade } = require('../utils/modalidadeSynonyms');
+
+const Joi = require('joi');
+const { validateModalidade } = require('../utils/validators');
+
+router.get('/', async (req, res, next) => {
+  const { modalidade, page = 1, limit = 20 } = req.query;
+  // Validação
+  if (modalidade) {
+    const { error } = validateModalidade(modalidade);
+    if (error) return res.status(400).json({ erro: 'Modalidade inválida' });
+  }
+  const pageNum = parseInt(page, 10);
+  const limitNum = parseInt(limit, 10);
   try {
     let query = db.collection('jogos');
     if (modalidade) {
-      query = query.where('modalidade', '==', modalidade.toLowerCase());
+      const modKey = resolveModalidade(modalidade);
+      query = query.where('modalidade', '==', modKey);
     }
     const snapshot = await query.get();
-    const jogos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json({ jogos });
+    let jogos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // Paginação manual
+    const start = (pageNum - 1) * limitNum;
+    jogos = jogos.slice(start, start + limitNum);
+    res.json({ jogos, page: pageNum, limit: limitNum });
   } catch (e) {
-    res.status(500).json({ erro: 'Erro ao buscar jogos', detalhes: e.message });
+    next(e);
   }
 });
 
