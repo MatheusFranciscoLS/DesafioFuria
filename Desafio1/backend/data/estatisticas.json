@@ -1,0 +1,13 @@
+{
+  "art": { "kills": 120, "deaths": 90, "kdr": 1.33, "time": "FURIA", "curiosidade": "IGL mais agressivo do Brasil!", "modalidade": "cs2" },
+  "yuurih": { "kills": 140, "deaths": 80, "kdr": 1.75, "time": "FURIA", "curiosidade": "Especialista em entry frag.", "modalidade": "cs2" },
+  "kscerato": { "kills": 130, "deaths": 85, "kdr": 1.53, "time": "FURIA", "curiosidade": "Clutch master.", "modalidade": "cs2" },
+  "mazinn": { "kills": 95, "deaths": 70, "kdr": 1.36, "time": "FURIA", "curiosidade": "Destaque no Valorant.", "modalidade": "valorant" },
+  "qck": { "kills": 110, "deaths": 85, "kdr": 1.29, "time": "FURIA", "curiosidade": "Duelista ágil.", "modalidade": "valorant" },
+  "r4re": { "kills": 80, "deaths": 60, "kdr": 1.33, "time": "FURIA", "curiosidade": "Capitão da equipe R6.", "modalidade": "rainbowsix" },
+  "gabrielpn": { "gols": 27, "assistencias": 12, "partidas": 18, "time": "FURIA", "curiosidade": "Campeão e-Brasileirão.", "modalidade": "fifa" },
+  "fred": { "gols": 10, "assistencias": 7, "partidas": 9, "time": "FURIA", "curiosidade": "Craque da Kings League.", "modalidade": "kingsleague" },
+  "notted": { "abates": 200, "partidas": 15, "time": "FURIA", "curiosidade": "Top 1 ALGS.", "modalidade": "apex" },
+  "fnb": { "kills": 20, "deaths": 8, "kdr": 2.5, "time": "FURIA", "curiosidade": "Top laner do CBLOL.", "modalidade": "lol" },
+  "caiotg1": { "gols": 12, "saves": 30, "partidas": 5, "time": "FURIA", "curiosidade": "Campeão brasileiro de Rocket League.", "modalidade": "rocketleague" }
+}

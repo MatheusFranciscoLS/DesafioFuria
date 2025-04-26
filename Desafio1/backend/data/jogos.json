@@ -1,0 +1,10 @@
+[
+  { "modalidade": "cs2", "adversario": "NAVI", "data": "2025-05-01", "hora": "18:00", "torneio": "Major" },
+  { "modalidade": "valorant", "adversario": "LOUD", "data": "2025-05-02", "hora": "20:00", "torneio": "Champions" },
+  { "modalidade": "rainbowsix", "adversario": "Liquid", "data": "2025-05-03", "hora": "17:00", "torneio": "Brasileirão R6" },
+  { "modalidade": "fifa", "adversario": "SPQR", "data": "2025-05-04", "hora": "21:00", "torneio": "e-Brasileirão" },
+  { "modalidade": "kingsleague", "adversario": "Rayo de Barcelona", "data": "2025-05-05", "hora": "19:00", "torneio": "Kings League" },
+  { "modalidade": "apex", "adversario": "LOUD", "data": "2025-05-06", "hora": "20:00", "torneio": "ALGS" },
+  { "modalidade": "lol", "adversario": "paiN", "data": "2025-05-07", "hora": "16:00", "torneio": "CBLOL" },
+  { "modalidade": "rocketleague", "adversario": "Team BDS", "data": "2025-05-08", "hora": "15:00", "torneio": "RLCS" }
+]

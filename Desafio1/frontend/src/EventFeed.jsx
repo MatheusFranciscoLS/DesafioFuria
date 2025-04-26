@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { furiaModalidades } from "./furia-modalidades";
 
 // Função utilitária para tempo relativo
 function timeAgo(ts) {
@@ -26,9 +27,16 @@ function eventBadge(type) {
   return <span style={{...style, borderRadius:6, fontSize:'0.97em', padding:'2px 9px', fontWeight:700, marginRight:7, marginLeft:2, letterSpacing:0.2}}>{type.toUpperCase()}</span>;
 }
 
-export default function EventFeed({ events: propEvents = [] }) {
+const EVENTOS_EXEMPLO = [
+  { icon: '🔥', text: 'FURIA venceu o pistol round!' },
+  { icon: '💥', text: 'KSCERATO fez um clutch 1v3!' },
+  { icon: '🎯', text: 'arT abriu o bombsite com entry kill.' },
+];
+
+export default function EventFeed({ events: propEvents, modalidade = 'all', setModalidade }) {
+  // Se não vier eventos por props, usa exemplo
+  const [events, setEvents] = useState(propEvents && propEvents.length ? propEvents : EVENTOS_EXEMPLO);
   const [modal, setModal] = useState(null);
-  const [events, setEvents] = useState(propEvents);
 
   // Limpar eventos antigos
   function clearEvents() {
@@ -37,7 +45,11 @@ export default function EventFeed({ events: propEvents = [] }) {
 
   // Garante sempre pelo menos 3 linhas de altura para o feed
   const minRows = 3;
-  const feedEvents = events && events.length ? events : Array(minRows).fill(null);
+  let filteredEvents = events;
+  if (modalidade && modalidade !== 'all') {
+    filteredEvents = events.filter(e => !e.modalidade || e.modalidade === modalidade);
+  }
+const feedEvents = filteredEvents && filteredEvents.length ? filteredEvents : Array(minRows).fill(null);
 
   return (
     <section className="furia-eventfeed" style={{
@@ -58,10 +70,36 @@ export default function EventFeed({ events: propEvents = [] }) {
       justifyContent:'flex-start',
       position:'relative'
     }}>
-      <h2 style={{color:'#FFD600',fontWeight:700,letterSpacing:0.2,fontSize:'1.19em',margin:'0 0 10px 0',textShadow:'0 1px 6px #0008',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-        Feed de Eventos
-        <button onClick={clearEvents} style={{marginLeft:'auto',background:'none',border:'none',color:'#FFD600',fontWeight:700,fontSize:'1em',cursor:'pointer',opacity:0.8}} title="Limpar feed">🧹</button>
-      </h2>
+      <div className="furia-modalidades-bar" style={{display:'flex',gap:10,marginBottom:8,flexWrap:'wrap'}}>
+        {furiaModalidades.map(m => (
+          <button
+            key={m.key}
+            className={
+              'furia-modalidade-btn' + (modalidade === m.key ? ' selected' : '')
+            }
+            style={{
+              background: modalidade === m.key ? '#FFD600' : '#23242b',
+              color: modalidade === m.key ? '#181A20' : '#fff',
+              border: modalidade === m.key ? '2px solid #FFD600' : '2px solid #fff',
+              borderRadius: 7,
+              padding: '6px 13px',
+              fontWeight: 600,
+              fontSize: '0.98em',
+              cursor: 'pointer',
+              transition: 'background 0.13s, color 0.13s, border 0.13s',
+              outline: 'none',
+            }}
+            onClick={() => setModalidade(m.key)}
+            aria-label={`Filtrar por modalidade: ${m.label}`}
+          >
+            {m.label}
+          </button>
+        ))}
+      </div>
+<h2 style={{color:'#FFD600',fontWeight:700,letterSpacing:0.2,fontSize:'1.19em',margin:'0 0 10px 0',textShadow:'0 1px 6px #0008',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+  Feed de Eventos
+  <button onClick={clearEvents} style={{marginLeft:'auto',background:'none',border:'none',color:'#FFD600',fontWeight:700,fontSize:'1em',cursor:'pointer',opacity:0.8}} title="Limpar feed">🧹</button>
+</h2>
       <ul style={{listStyle:'none',padding:0,margin:0,minHeight:80,display:'flex',flexDirection:'column',gap:8}}>
         {feedEvents.map((e, idx) => (
           e ? (

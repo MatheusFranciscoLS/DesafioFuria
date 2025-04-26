@@ -186,6 +186,270 @@ body {
   }
 }
 
+/* === MODAL CENTRALIZADO === */
+
+/* === BOT-AJUDA SUGESTÕES === */
+.furia-bot-suggestions-search {
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 8px;
+  padding: 7px 14px;
+  border-radius: 7px;
+  border: 1.5px solid #fff3;
+  background: #23242b;
+  color: #fff;
+  font-size: 1.04em;
+  outline: none;
+  transition: border 0.16s, box-shadow 0.16s;
+  box-shadow: 0 2px 8px #0008;
+}
+.furia-bot-suggestions-search:focus {
+  border: 1.5px solid #FFD600;
+  box-shadow: 0 2px 10px #FFD60033;
+}
+.furia-bot-suggestions-popular {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 10px;
+  margin-bottom: 8px;
+  margin-top: 2px;
+}
+.furia-bot-suggestions-popular-title {
+  color: #fff;
+  font-size: 0.99em;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.furia-bot-popular-btn {
+  background: #23242b;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 7px;
+  padding: 6px 13px;
+  font-weight: 600;
+  font-size: 0.99em;
+  cursor: pointer;
+  transition: background 0.13s, color 0.13s, border 0.13s, transform 0.1s;
+  box-shadow: 0 1px 6px #0008;
+}
+.furia-bot-popular-btn:hover, .furia-bot-popular-btn:focus {
+  background: #fff;
+  color: #181A20;
+  border: 2px solid #FFD600;
+  transform: scale(1.05);
+}
+.furia-bot-suggestions-history {
+  margin-top: 6px;
+  margin-bottom: 3px;
+  color: #fff8;
+  font-size: 0.97em;
+}
+.furia-bot-history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.furia-bot-history-btn {
+  background: #23242b;
+  color: #fff;
+  border: 1.5px solid #fff3;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 0.97em;
+  cursor: pointer;
+  margin-bottom: 4px;
+  transition: background 0.13s, color 0.13s, border 0.13s;
+}
+.furia-bot-history-btn:hover, .furia-bot-history-btn:focus {
+  background: #fff;
+  color: #181A20;
+  border: 1.5px solid #FFD600;
+}
+.furia-suggestion-btn.copied {
+  background: #fff !important;
+  color: #43A047 !important;
+  border: 2px solid #43A047 !important;
+  box-shadow: 0 2px 10px #43A04755 !important;
+}
+.furia-suggestion-copy {
+  transition: color 0.14s;
+}
+.furia-suggestion-btn.copied .furia-suggestion-copy {
+  color: #fff;
+  font-weight: bold;
+}
+.furia-suggestion-btn.command {
+  border: 2px dashed #fff;
+  background: #181A20;
+  color: #FFD600;
+  font-family: "Fira Mono", monospace;
+  font-size: 1.01em;
+  letter-spacing: 0.03em;
+}
+.furia-suggestion-btn.command:hover, .furia-suggestion-btn.command:focus {
+  background: #FFD60044;
+  color: #181A20;
+  border: 2px dashed #FFD600;
+}
+.furia-suggestion-tooltip {
+  position: absolute;
+  left: 0;
+  top: 105%;
+  z-index: 10;
+  background: #181A20;
+  color: #fff;
+  border: 1.5px solid #fff3;
+  border-radius: 7px;
+  padding: 7px 13px;
+  font-size: 0.97em;
+  white-space: pre-line;
+  box-shadow: 0 2px 8px #0008;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s;
+  min-width: 140px;
+  max-width: 280px;
+}
+.furia-suggestion-btn:hover .furia-suggestion-tooltip, .furia-suggestion-btn:focus .furia-suggestion-tooltip {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.furia-bot-suggestions-bar {
+  background: #181A20;
+  border: 2px solid #fff;
+  border-radius: 12px;
+  padding: 16px 14px 10px 14px;
+  margin-bottom: 16px;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 16px #0008, 0 1.5px 10px #fff2;
+  max-width: 100%;
+  align-items: stretch;
+  animation: fadeInModal 0.28s;
+}
+.furia-bot-suggestions-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.09em;
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.furia-bot-suggestions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  width: 100%;
+}
+.furia-bot-suggestion-item {
+  margin: 0;
+}
+.furia-suggestion-btn {
+  background: #23242b;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 7px;
+  padding: 7px 15px 7px 13px;
+  font-weight: 600;
+  font-size: 1.01em;
+  cursor: pointer;
+  transition: background 0.16s, color 0.16s, border 0.13s, transform 0.13s, box-shadow 0.16s;
+  box-shadow: 0 2px 10px #0008;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  position: relative;
+}
+.furia-suggestion-btn:hover, .furia-suggestion-btn:focus {
+  background: #fff;
+  color: #181A20;
+  border: 2px solid #FFD600;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 18px #FFD60044;
+}
+.furia-suggestion-copy {
+  font-size: 1.11em;
+  margin-left: 3px;
+  opacity: 0.75;
+  pointer-events: none;
+}
+@media (max-width: 600px) {
+  .furia-bot-suggestions-bar {
+    padding: 10px 4px 7px 4px;
+    gap: 7px;
+  }
+  .furia-bot-suggestions-title {
+    font-size: 0.99em;
+  }
+  .furia-suggestion-btn {
+    font-size: 0.97em;
+    padding: 6px 8px 6px 8px;
+  }
+  .furia-bot-suggestions-list {
+    gap: 6px 4px;
+  }
+}
+
+.furia-modal-overlay {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  background: rgba(24, 26, 32, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInModal 0.22s;
+}
+.furia-modal-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+.furia-modal-card {
+  background: #23242b;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px #FFD60044, 0 1.5px 12px #000b;
+  padding: 38px 34px 28px 34px;
+  min-width: 260px;
+  max-width: 92vw;
+  color: #FFD600;
+  font-size: 1.09rem;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid #FFD600;
+  animation: modalPopIn 0.24s;
+}
+.furia-modal-btns {
+  display: flex;
+  gap: 14px;
+  margin-top: 18px;
+  justify-content: center;
+}
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modalPopIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 /* === FRASES BOT BAR === */
 .furia-frases-bot-bar {
   display: flex;

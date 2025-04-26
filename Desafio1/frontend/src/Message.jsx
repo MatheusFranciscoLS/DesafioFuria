@@ -1,4 +1,5 @@
 import React from "react";
+import { BOT_NAME, BOT_PHOTO } from "./torcida-bot";
 
 function formatTime(ts) {
   if (!ts) return "";
@@ -9,7 +10,7 @@ function formatTime(ts) {
 
 export default function Message({ m, isOwn, topFan }) {
   const isTopFan = topFan && m.user === topFan;
-  const isBot = m.uid === 'furia-bot';
+  const isBot = m.user === BOT_NAME || m.uid === 'furia-bot';
   return (
     <div
       className={
@@ -25,12 +26,14 @@ export default function Message({ m, isOwn, topFan }) {
         marginBottom: 10,
         gap: 7,
         justifyContent: isOwn ? 'flex-end' : 'flex-start',
-        animation: isBot ? 'bot-pop 0.4s' : undefined,
-        width: '100%',
-        boxSizing: 'border-box'
+        animation: isBot ? 'bot-pop 0.4s' : undefined
       }}
+      aria-label={isBot ? 'Mensagem do bot Torcida FURIA' : undefined}
+      role={isBot ? 'status' : undefined}
     >
-
+      {isBot && (
+        <img src={BOT_PHOTO} alt="Avatar do Bot" style={{ width: 38, height: 38, borderRadius: '50%', marginRight: 12, marginLeft: isOwn ? 12 : 20, border: '2.5px solid #FFD600', background: '#fff', boxShadow: '0 1px 6px #FFD60033', objectFit: 'cover', display: 'block', alignSelf: 'center' }} />
+      )}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: isOwn ? 'flex-end' : 'flex-start', width: '100%', marginRight: 10, marginLeft: 10,}}>
         {/* Nome, medalha e badge em linha acima do balão */}
         <span style={{display:'flex',alignItems:'center',gap:7,minHeight:2,marginBottom:10}}>
@@ -59,12 +62,12 @@ export default function Message({ m, isOwn, topFan }) {
         }}>
           <span style={{flex:1,wordBreak:'break-word'}}>{m.text}</span>
           <span style={{
-            fontSize:'1.07em',
+            fontSize: isBot && window.location.hash === '#bot-ajuda' ? '1.13em' : '1.07em',
             fontWeight:700,
-            color:isOwn?'#181A20':'#FFD600',
+            color: isBot && window.location.hash === '#bot-ajuda' ? '#FFD600' : (isOwn?'#181A20':'#FFD600'),
             marginLeft:12,
             alignSelf:'flex-end',
-            textShadow: isOwn ? '0 1px 4px #FFD60077' : '0 1px 4px #0008'
+            textShadow: isBot && window.location.hash === '#bot-ajuda' ? '0 1px 8px #FFD60077' : (isOwn ? '0 1px 4px #FFD60077' : '0 1px 4px #0008')
           }}>{formatTime(m.ts)}</span>
         </div>
       </div>

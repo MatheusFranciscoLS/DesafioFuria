@@ -18,6 +18,8 @@ function App() {
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(true);
   const [channel, setChannel] = useState(CHANNELS[0].id);
+  // Estado global de modalidade
+  const [modalidade, setModalidade] = useState('all');
 
   // Live status fetch
   useEffect(() => {
@@ -73,17 +75,20 @@ function App() {
     try {
       const newMsg = {
         text: msg,
-        user: user.displayName || user.email || "Anônimo",
-        photo: user.photoURL || null,
+        user: (user && (user.displayName || user.email)) || "Anônimo",
+        photo: (user && user.photoURL) || null,
         ts: Date.now(),
-        uid: user.uid || null,
+        uid: (user && user.uid) || null,
         channel: channel,
       };
       setMsg("");
       await addDoc(collection(db, "messages"), newMsg);
       // Se for no canal #bot-ajuda, responde automaticamente
       if (channel === 'bot-ajuda') {
-        const resposta = botResponder({ text: msg });
+        let resposta = botResponder({ text: msg });
+        if (resposta && typeof resposta.then === 'function') {
+          resposta = await resposta;
+        }
         if (resposta) {
           await addDoc(collection(db, "messages"), {
             text: resposta,
@@ -165,8 +170,10 @@ function App() {
           handleGoogleLogin={handleGoogleLogin}
           handleAnonLogin={handleAnonLogin}
           channel={channel}
+          modalidade={modalidade}
+          setModalidade={setModalidade}
         />
-        <EventFeed events={eventFeed} />
+        <EventFeed events={eventFeed} modalidade={modalidade} setModalidade={setModalidade} />
       </div>
       {/* Mais painéis e features podem ser adicionados aqui! */}
     </div>

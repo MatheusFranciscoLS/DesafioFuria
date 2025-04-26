@@ -1,0 +1,110 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Torcida FURIA API",
+    "version": "2.0.0",
+    "description": "API para informações da Torcida FURIA com dados dinâmicos em Firestore. Todos os endpoints de escrita requerem autenticação Bearer JWT do Firebase."
+  },
+  "host": "localhost:5000",
+  "basePath": "/api",
+  "schemes": ["http"],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Token JWT do Firebase: Bearer <token>"
+    }
+  },
+  "paths": {
+    "/elenco/{modalidade}": {
+      "get": {
+        "summary": "Listar elenco por modalidade",
+        "parameters": [
+          { "name": "modalidade", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "Lista de jogadores", "schema": { "$ref": "#/definitions/ElencoResponse" } },
+          "404": { "description": "Modalidade não encontrada" }
+        }
+      },
+      "post": {
+        "summary": "Adicionar elenco de uma modalidade",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          { "name": "modalidade", "in": "path", "required": true, "type": "string" },
+          { "name": "body", "in": "body", "required": true, "schema": { "$ref": "#/definitions/ElencoBody" } }
+        ],
+        "responses": {
+          "201": { "description": "Elenco salvo com sucesso", "schema": { "$ref": "#/definitions/ElencoResponse" } },
+          "400": { "description": "Jogadores deve ser um array não vazio" },
+          "401": { "description": "Token inválido ou ausente" }
+        }
+      }
+    },
+    "/estatisticas/{jogador}": {
+      "get": {
+        "summary": "Retorna estatísticas de um jogador",
+        "parameters": [
+          { "name": "jogador", "in": "path", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Estatísticas do jogador" },
+          "404": { "description": "Jogador não encontrado" }
+        }
+      }
+    },
+    "/curiosidades/{modalidade}": {
+      "get": {
+        "summary": "Retorna curiosidades de uma modalidade",
+        "parameters": [
+          { "name": "modalidade", "in": "path", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": { "description": "Curiosidades da modalidade" },
+          "404": { "description": "Modalidade não encontrada" }
+        }
+      }
+    },
+    "/noticias": {
+      "get": {
+        "summary": "Lista todas as notícias ou filtra por modalidade",
+        "parameters": [
+          { "name": "modalidade", "in": "query", "schema": { "type": "string" }, "required": false }
+        ],
+        "responses": {
+          "200": { "description": "Lista de notícias" }
+        }
+      }
+    },
+    "/modalidades": {
+      "get": {
+        "summary": "Lista todas as modalidades disponíveis",
+        "responses": {
+          "200": { "description": "Lista de modalidades" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ElencoResponse": {
+      "type": "object",
+      "properties": {
+        "elenco": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "ElencoBody": {
+      "type": "object",
+      "properties": {
+        "jogadores": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["jogadores"]
+    }
+  }
+}
