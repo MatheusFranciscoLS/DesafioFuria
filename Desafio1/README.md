@@ -6,11 +6,13 @@ Aqui você acompanha jogos, consulta estatísticas, interage com outros fãs e r
 ## 🚀 Funcionalidades Principais
 
 - Chat global em tempo real (Firebase)
-- Landing page temática FURIA integrada ao chat
+- Tela de login moderna: escolha entre Google ou Anônimo
+- Autenticação obrigatória: só usuários autenticados acessam o chat
 - Modais para agenda de jogos e placares recentes (acesso fácil pela interface)
 - Comandos inteligentes para fãs (veja abaixo)
 - Status de jogos ao vivo (mock)
-- Autenticação (Google e Anônima)
+- Experiência reativa: após login, acesso imediato ao chat
+- Logout seguro: ao sair, retorna para a tela de login
 
 ## 💬 Comandos do Chat
 
@@ -29,8 +31,10 @@ Aqui você acompanha jogos, consulta estatísticas, interage com outros fãs e r
 
 ## 🖼️ Demonstração
 
-- Prints ou GIFs aqui mostrando:
-  - Chat em funcionamento
+- Prints ou GIFs mostrando:
+  - Tela de login com botões "Entrar com Google" e "Entrar como Anônimo"
+  - Chat em funcionamento após login
+  - Logout retornando à tela de login
   - Abertura dos modais de agenda de jogos e placares recentes
   - Interação do fã com o bot e comandos
 - [Link para vídeo de demonstração (YouTube/Drive)](URL_DO_VIDEO)
@@ -46,6 +50,12 @@ Aqui você acompanha jogos, consulta estatísticas, interage com outros fãs e r
 2. Instale as dependências em `/frontend` e `/backend`
 3. Configure o Firebase (`/frontend/.env.example`)
 4. Rode `npm start` em cada pasta
+
+#### Observações importantes
+- **Login obrigatório:** Você só acessa o chat após autenticação (Google ou Anônimo).
+- **Popups bloqueados:** Se o botão "Entrar com Google" não abrir, desative bloqueadores de popup/extensões para localhost.
+- **Logout:** Ao sair, você retorna automaticamente à tela de login.
+- **Erros 400 ou ERR_BLOCKED_BY_CLIENT** ao sair são normais e não afetam o funcionamento.
 
 ## 📡 APIs principais (backend)
 
