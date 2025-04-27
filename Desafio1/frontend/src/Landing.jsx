@@ -1,12 +1,30 @@
 import React from "react";
 import "./furia-theme.css";
+import { auth, googleProvider, signInAnonymously, signInWithPopup } from "./firebase";
 
 /**
  * Tela inicial (Landing Page) da FURIA GG
- * Exibe informações institucionais, missão, recursos e botão para entrar no chat.
- * @param {function} onEnter - Callback para entrar no chat
+ * Exibe informações institucionais, missão, recursos e botões para login.
  */
-export default function Landing({ onEnter }) {
+export default function Landing() {
+  const handleGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (e) {
+      if (e.code === "auth/popup-closed-by-user") {
+        alert("Login cancelado. Tente novamente!");
+      } else {
+        alert("Erro ao autenticar: " + (e.message || e.code));
+      }
+    }
+  };
+  const handleAnon = async () => {
+    try {
+      await signInAnonymously(auth);
+    } catch (e) {
+      alert("Erro ao entrar como anônimo: " + (e.message || e.code));
+    }
+  };
   return (
     <div className="furia-landing-container">
       <header className="furia-header" style={{textAlign:'center',padding:'36px 0 16px 0'}}>
@@ -35,9 +53,12 @@ export default function Landing({ onEnter }) {
         </section>
         <section style={{marginBottom:34}}>
           <h2 style={{fontSize:'1.2em',color:'#FFD600',marginBottom:9}}>Junte-se à comunidade!</h2>
-          <p style={{color:'#fff',fontSize:'1.06em'}}>Clique no botão abaixo para entrar no chat e mostrar sua paixão pela FURIA!</p>
-          <button className="furia-btn" style={{fontSize:'1.13em',marginTop:18,padding:'12px 38px',background:'#FFD600',color:'#181A20',fontWeight:700,boxShadow:'0 2px 12px #FFD60044'}} onClick={onEnter}>
-            Entrar no Chat
+          <p style={{color:'#fff',fontSize:'1.06em'}}>Escolha como deseja participar e entre no chat:</p>
+          <button className="furia-btn" style={{fontSize:'1.13em',marginTop:18,padding:'12px 38px',background:'#FFD600',color:'#181A20',fontWeight:700,boxShadow:'0 2px 12px #FFD60044'}} onClick={handleGoogle}>
+            Entrar com Google
+          </button>
+          <button className="furia-btn" style={{fontSize:'1.13em',marginTop:14,padding:'12px 38px',background:'#222',color:'#FFD600',fontWeight:700,boxShadow:'0 2px 12px #FFD60044'}} onClick={handleAnon}>
+            Entrar como Anônimo
           </button>
         </section>
       </main>

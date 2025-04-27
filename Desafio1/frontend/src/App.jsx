@@ -23,7 +23,6 @@ import Landing from './Landing.jsx';
  * Renderiza Landing, Sidebar, MainChat, EventFeed e outros componentes principais.
  */
 function App() {
-  const [showLanding, setShowLanding] = useState(true);
   const [status, setStatus] = useState(null);
   const [user, setUser] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -190,11 +189,11 @@ function App() {
   const [showQuiz, setShowQuiz] = useState(false);
   const [showEnquete, setShowEnquete] = useState(false);
 
-  let content;
-  if (showLanding) {
-    content = <Landing onEnter={() => setShowLanding(false)} />;
-  } else {
-    content = (
+  if (!user) {
+    return <Landing />;
+  }
+  return (
+    <>
       <div id="furia-root" className="furia-layout">
         <div className="furia-header">
           <div className="furia-logo-wrap">
@@ -234,11 +233,6 @@ function App() {
           <MainChat.EnqueteContent />
         </QuizEnqueteModal>
       </div>
-    );
-  }
-  return (
-    <>
-      {content}
       <Toast
         type={toast.type}
         message={toast.message}
