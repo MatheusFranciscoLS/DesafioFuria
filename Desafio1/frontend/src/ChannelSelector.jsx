@@ -6,6 +6,10 @@ export const CHANNELS = [
   { id: "bot-ajuda", label: "#bot-ajuda" },
 ];
 
+/**
+ * Componente seletor de canais do chat
+ * @param {{channel: string, setChannel: Function}} props
+ */
 export default function ChannelSelector({ channel, setChannel }) {
   return (
     <div style={{ marginBottom: 12 }}>

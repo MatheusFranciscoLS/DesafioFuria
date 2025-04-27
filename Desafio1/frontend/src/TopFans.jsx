@@ -1,5 +1,13 @@
 import React from "react";
 
+/**
+ * Componente de ranking dos fãs mais ativos do chat.
+ * Exibe os 5 usuários com mais mensagens, mostrando medalhas, badges e XP.
+ *
+ * @param {{ messages: Array<{user?: string, displayName?: string}> }} props
+ *   - messages: lista de mensagens do chat
+ * @returns {JSX.Element} Ranking dos fãs mais ativos
+ */
 export default function TopFans({ messages }) {
   // Conta mensagens por usuário (robusto)
   const counts = {};
@@ -30,7 +38,9 @@ export default function TopFans({ messages }) {
               const allXP = JSON.parse(localStorage.getItem('furiaXP')||'{}');
               badges = allBadges[user] || '';
               xp = allXP[user] || '';
-            } catch {}
+            } catch {
+              // Ignora erros de parse do localStorage, pois badges/XP são opcionais
+            }
             return (
               <li key={user} style={{fontWeight: idx === 0 ? 'bold' : 'normal', display:'flex', alignItems:'center'}}>
                 {medals[idx] || ''} <span style={{marginRight:5}}>{user}</span>

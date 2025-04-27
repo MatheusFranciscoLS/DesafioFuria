@@ -3,7 +3,10 @@ const router = express.Router();
 const db = require('../firebase');
 const admin = require('firebase-admin');
 
-// Middleware de autenticação Firebase
+/**
+ * Middleware de autenticação Firebase
+ * Verifica o token Bearer e adiciona o usuário autenticado em req.user
+ */
 async function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -25,6 +28,16 @@ const { resolveModalidade } = require('../utils/modalidadeSynonyms');
 const Joi = require('joi');
 const { validateModalidade } = require('../utils/validators');
 
+/**
+ * GET notícias (com filtro opcional por modalidade)
+ * Query params: modalidade, page, limit
+ * @route GET /
+ */
+/**
+ * GET noticias
+ * Retorna erro amigável se houver query inválida (ex: comandos reservados).
+ * @route GET /
+ */
 router.get('/', async (req, res, next) => {
   const { modalidade, page = 1, limit = 20 } = req.query;
   if (modalidade) {
@@ -51,6 +64,11 @@ router.get('/', async (req, res, next) => {
 });
 
 // POST - adicionar notícia
+/**
+ * POST - adicionar notícia
+ * @route POST /
+ * @access Authenticated
+ */
 router.post('/', authenticate, async (req, res) => {
   const { modalidade, titulo, data, texto } = req.body;
   if (!modalidade || !titulo || !data || !texto) {
@@ -65,6 +83,11 @@ router.post('/', authenticate, async (req, res) => {
 });
 
 // PUT - atualizar notícia
+/**
+ * PUT - atualizar notícia
+ * @route PUT /:id
+ * @access Authenticated
+ */
 router.put('/:id', authenticate, async (req, res) => {
   const { id } = req.params;
   const { modalidade, titulo, data, texto } = req.body;
@@ -80,6 +103,11 @@ router.put('/:id', authenticate, async (req, res) => {
 });
 
 // DELETE - remover notícia
+/**
+ * DELETE - remover notícia
+ * @route DELETE /:id
+ * @access Authenticated
+ */
 router.delete('/:id', authenticate, async (req, res) => {
   const { id } = req.params;
   try {

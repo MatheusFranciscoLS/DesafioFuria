@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { furiaModalidades } from "./furia-modalidades";
 
-// Função utilitária para tempo relativo
+/**
+ * Retorna o tempo relativo (ex: 'há 5min', 'agora') para um timestamp
+ * @param {object|number} ts - Timestamp (Firestore ou epoch)
+ * @returns {string} Tempo relativo formatado
+ */
 function timeAgo(ts) {
   if (!ts) return '';
   const now = Date.now();
@@ -13,7 +17,11 @@ function timeAgo(ts) {
   return new Date(t).toLocaleDateString();
 }
 
-// Badge por tipo de evento
+/**
+ * Retorna um badge visual para o tipo de evento (gol, cartão, etc)
+ * @param {string} type - Tipo de evento
+ * @returns {JSX.Element|null} Elemento visual do badge ou null
+ */
 function eventBadge(type) {
   if (!type) return null;
   const badgeStyle = {
@@ -27,29 +35,47 @@ function eventBadge(type) {
   return <span style={{...style, borderRadius:6, fontSize:'0.97em', padding:'2px 9px', fontWeight:700, marginRight:7, marginLeft:2, letterSpacing:0.2}}>{type.toUpperCase()}</span>;
 }
 
+/**
+ * Eventos de exemplo para exibição inicial ou fallback
+ * @type {Array<{icon: string, text: string}>}
+ */
 const EVENTOS_EXEMPLO = [
   { icon: '🔥', text: 'FURIA venceu o pistol round!' },
   { icon: '💥', text: 'KSCERATO fez um clutch 1v3!' },
   { icon: '🎯', text: 'arT abriu o bombsite com entry kill.' },
 ];
 
+/**
+ * Componente principal do Feed de Eventos
+ * Exibe eventos filtrados por modalidade e permite seleção de modalidade
+ * @param {Array} events - Lista de eventos recebidos por props
+ * @param {string} modalidade - Modalidade selecionada
+ * @param {Function} setModalidade - Função para alterar modalidade
+ * @returns {JSX.Element} Feed de eventos renderizado
+ */
 export default function EventFeed({ events: propEvents, modalidade = 'all', setModalidade }) {
-  // Se não vier eventos por props, usa exemplo
+  // Estado local dos eventos e modal de detalhes
+  // Usa eventos de exemplo se não vierem por props
   const [events, setEvents] = useState(propEvents && propEvents.length ? propEvents : EVENTOS_EXEMPLO);
   const [modal, setModal] = useState(null);
 
-  // Limpar eventos antigos
+  /**
+   * Limpa todos os eventos do feed
+   */
   function clearEvents() {
     setEvents([]);
   }
 
-  // Garante sempre pelo menos 3 linhas de altura para o feed
+  // Quantidade mínima de linhas para manter o feed visualmente agradável
   const minRows = 3;
+
+  // Filtra eventos pela modalidade selecionada (exceto 'Todas')
   let filteredEvents = events;
   if (modalidade && modalidade !== 'all') {
-    filteredEvents = events.filter(e => !e.modalidade || e.modalidade === modalidade);
+    filteredEvents = events.filter(e => e.modalidade === modalidade);
   }
-const feedEvents = filteredEvents && filteredEvents.length ? filteredEvents : Array(minRows).fill(null);
+  // Preenche com placeholders caso não haja eventos
+  const feedEvents = filteredEvents && filteredEvents.length ? filteredEvents : Array(minRows).fill(null);
 
   return (
     <section className="furia-eventfeed" style={{
@@ -145,6 +171,11 @@ const feedEvents = filteredEvents && filteredEvents.length ? filteredEvents : Ar
   );
 }
 
+/**
+ * Formata o timestamp para exibir apenas hora e minuto
+ * @param {object|number} ts - Timestamp (Firestore ou epoch)
+ * @returns {string} Hora formatada
+ */
 function formatTime(ts) {
   if (!ts) return '';
   const date = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);

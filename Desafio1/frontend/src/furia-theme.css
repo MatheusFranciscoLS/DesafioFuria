@@ -54,7 +54,7 @@ body {
   height: 100vh;
   overflow: auto !important;
   box-sizing: border-box;
-  overflow-x: auto !important;
+  overflow-x: hidden !important;
   overflow-y: auto !important;
 }
 

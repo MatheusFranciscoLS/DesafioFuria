@@ -3,7 +3,10 @@ const router = express.Router();
 const db = require('../firebase');
 const admin = require('firebase-admin');
 
-// Middleware de autenticação Firebase
+/**
+ * Middleware de autenticação Firebase
+ * Verifica o token Bearer e adiciona o usuário autenticado em req.user
+ */
 async function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -25,6 +28,16 @@ const { validateModalidade } = require('../utils/validators');
 // GET placares (com filtro opcional por modalidade)
 const { resolveModalidade } = require('../utils/modalidadeSynonyms');
 
+/**
+ * GET placares (com filtro opcional por modalidade)
+ * Query params: modalidade, page, limit
+ * @route GET /
+ */
+/**
+ * GET placares
+ * Retorna erro amigável se houver query inválida (ex: comandos reservados).
+ * @route GET /
+ */
 router.get('/', async (req, res, next) => {
   const { modalidade, page = 1, limit = 20 } = req.query;
   if (modalidade) {
@@ -34,6 +47,11 @@ router.get('/', async (req, res, next) => {
   const pageNum = parseInt(page, 10);
   const limitNum = parseInt(limit, 10);
   try {
+    // Tratamento para comandos reservados como query
+    const { comando } = req.query;
+    if (comando === 'help' || comando === 'comandos') {
+      return res.status(400).json({ erro: 'Consulta inválida. Veja os comandos disponíveis em /help.' });
+    }
     let query = db.collection('placares');
     if (modalidade) {
       const modKey = resolveModalidade(modalidade);
@@ -51,6 +69,11 @@ router.get('/', async (req, res, next) => {
 });
 
 // POST - adicionar placar
+/**
+ * POST - adicionar placar
+ * @route POST /
+ * @access Authenticated
+ */
 router.post('/', authenticate, async (req, res) => {
   const { modalidade, resultado, data } = req.body;
   if (!modalidade || !resultado || !data) {
@@ -65,6 +88,11 @@ router.post('/', authenticate, async (req, res) => {
 });
 
 // PUT - atualizar placar
+/**
+ * PUT - atualizar placar
+ * @route PUT /:id
+ * @access Authenticated
+ */
 router.put('/:id', authenticate, async (req, res) => {
   const { id } = req.params;
   const { modalidade, resultado, data } = req.body;
@@ -80,6 +108,11 @@ router.put('/:id', authenticate, async (req, res) => {
 });
 
 // DELETE - remover placar
+/**
+ * DELETE - remover placar
+ * @route DELETE /:id
+ * @access Authenticated
+ */
 router.delete('/:id', authenticate, async (req, res) => {
   const { id } = req.params;
   try {

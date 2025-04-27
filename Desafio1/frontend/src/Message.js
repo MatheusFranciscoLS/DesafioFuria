@@ -1,5 +1,10 @@
 import React from 'react';
 
+/**
+ * Formata o timestamp para exibição de hora (pt-BR)
+ * @param {object|number} ts - Timestamp Firestore ou epoch
+ * @returns {string}
+ */
 function formatTime(ts) {
   if (!ts) return '';
   try {
@@ -10,6 +15,10 @@ function formatTime(ts) {
   }
 }
 
+/**
+ * Componente de mensagem individual no chat
+ * @param {{m: object, isOwn: boolean}} props
+ */
 export default function Message({ m, isOwn }) {
   return (
     <div style={{

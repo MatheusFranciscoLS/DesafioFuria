@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LiveStatus from "./LiveStatus.jsx";
 import Message from "./Message.jsx";
-import { getTopFan } from "./topfan-util";
+import QuizEnqueteModal from "./QuizEnqueteModal.jsx";
+import { quizPerguntas } from "./QuizData";
+import { enquete } from "./EnqueteData";
+
 import { getFrasesProntas, getFrasesProntasPorModalidade } from "./torcida-bot";
 import { botFaqSuggestions } from "./bot-faq-suggestions";
 import FuriaModal from "./FuriaModal.jsx";
@@ -14,10 +17,27 @@ import {
 } from "./bot-ajuda-utils";
 import { furiaNews } from "./bot-news";
 import { furiaModalidades } from "./furia-modalidades";
+
+/**
+ * MainChat.jsx - Componente principal do chat da FURIA
+ * Gerencia exibição das mensagens, envio, sugestões, banner WhatsApp, e integração com Firestore.
+ * Contém subcomponentes para barra de notícias, sugestões de bot, e seleção de modalidade.
+ */
+
+/**
+ * Verifica se uma sugestão é um comando do bot (inicia com '/')
+ * @param {string} s - Sugestão de texto
+ * @returns {boolean} True se for comando
+ */
 function isCommandSuggestion(s) {
   return /^\//.test(s);
 }
 
+/**
+ * Barra de notícias filtrada pela modalidade selecionada
+ * @param {string} modalidade - Modalidade selecionada
+ * @returns {JSX.Element|null} Barra de notícias ou null
+ */
 function FuriaNewsBar({ modalidade }) {
   let filtered = furiaNews;
   if (modalidade && modalidade !== 'all') {
@@ -56,6 +76,13 @@ function FuriaNewsBar({ modalidade }) {
   );
 }
 
+/**
+ * Wrapper para seleção de modalidade e sugestões do bot-ajuda
+ * @param {string} msg - Mensagem atual
+ * @param {function} setMsg - Setter de mensagem
+ * @param {object} user - Usuário logado
+ * @returns {JSX.Element} Wrapper de sugestões/modalidades
+ */
 function BotAjudaModalidadesWrapper({ msg, setMsg, user }) {
   const [modalidade, setModalidade] = React.useState('all');
   return (
@@ -97,6 +124,15 @@ function BotAjudaModalidadesWrapper({ msg, setMsg, user }) {
   );
 }
 
+/**
+ * Barra de sugestões automáticas para o canal #bot-ajuda
+ * Inclui busca, histórico e sugestões baseadas na modalidade
+ * @param {string} msg - Mensagem atual
+ * @param {function} setMsg - Setter de mensagem
+ * @param {object} user - Usuário logado
+ * @param {string} modalidade - Modalidade selecionada
+ * @returns {JSX.Element} Barra de sugestões
+ */
 function BotAjudaBar({ msg, setMsg, user, modalidade = 'all' }) {
   const [search, setSearch] = React.useState("");
   const [copiedIdx, setCopiedIdx] = React.useState(-1);
@@ -234,22 +270,174 @@ function BotAjudaBar({ msg, setMsg, user, modalidade = 'all' }) {
   );
 }
 
-export default function MainChat({ user, messages, handleSend, msg, setMsg, handleLogout, topFan, loading, liveStatus, handleGoogleLogin, handleAnonLogin, channel, modalidade, setModalidade }) {
+/**
+ * Componente principal do chat
+ * Responsável por exibir mensagens, enviar novas, mostrar banner, status ao vivo, sugestões e ações rápidas.
+ * @param {object} user - Usuário logado
+ * @param {Array} messages - Lista de mensagens do chat
+ * @param {function} handleSend - Função para enviar mensagem
+ * @param {string} msg - Mensagem atual
+ * @param {function} setMsg - Setter de mensagem
+ * @param {function} handleLogout - Função para logout
+ * @param {object} topFan - Usuário top fan
+ * @param {boolean} loading - Estado de loading
+ * @param {object} liveStatus - Status ao vivo
+ * @param {function} handleGoogleLogin - Login Google
+ * @param {function} handleAnonLogin - Login anônimo
+ * @param {string} modalidade - Modalidade selecionada
+ * @param {function} setModalidade - Setter de modalidade
+ * @returns {JSX.Element} Chat principal renderizado
+ */
+export default function MainChat({ user, messages, handleSend, msg, setMsg, handleLogout, topFan, loading, liveStatus, handleGoogleLogin, handleAnonLogin, modalidade, setModalidade }) {
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [showEnquete, setShowEnquete] = useState(false);
+  // Estado local do quiz
+  const [quizIdx, setQuizIdx] = useState(0);
+  const [quizAcertos, setQuizAcertos] = useState(0);
+  const [quizFinalizado, setQuizFinalizado] = useState(false);
+  const [quizFeedback, setQuizFeedback] = useState("");
+  // Estado local da enquete
+  const [enqueteVoto, setEnqueteVoto] = useState("");
+  const [enqueteEnviado, setEnqueteEnviado] = useState(false);
+
+  function QuizContent() {
+    if (quizFinalizado) {
+      return (
+        <div style={{color:'#FFD600'}}>
+          <b>Quiz finalizado!</b><br/>
+          Você acertou {quizAcertos} de {quizPerguntas.length} perguntas.<br/>
+          <button className="furia-btn" style={{marginTop:12}} onClick={()=>{
+            setQuizIdx(0); setQuizAcertos(0); setQuizFinalizado(false); setQuizFeedback(""); setShowQuiz(false);
+          }}>Fechar</button>
+        </div>
+      );
+    }
+    const q = quizPerguntas[quizIdx];
+    return (
+      <div>
+        <div style={{fontWeight:600,marginBottom:8}}>{q.pergunta}</div>
+        <div style={{display:'flex',flexDirection:'column',gap:7}}>
+          {q.opcoes.map((op,i)=>(
+            <button key={i} className="furia-btn" style={{background:'#23242b',color:'#FFD600',border:'1.5px solid #FFD600',borderRadius:7,padding:'7px 10px',fontWeight:600,fontSize:'1em'}}
+              onClick={()=>{
+                if (quizFeedback) return;
+                if (op[0]===q.resposta) {
+                  setQuizAcertos(a=>a+1);
+                  setQuizFeedback('Acertou! 🎉 '+q.explicacao);
+                } else {
+                  setQuizFeedback('Errou! 😅 '+q.explicacao);
+                }
+                setTimeout(()=>{
+                  setQuizFeedback("");
+                  if (quizIdx+1<quizPerguntas.length) setQuizIdx(i=>i+1);
+                  else setQuizFinalizado(true);
+                }, 1200);
+              }}>{op}</button>
+          ))}
+        </div>
+        {quizFeedback && <div style={{marginTop:12,fontWeight:600}}>{quizFeedback}</div>}
+      </div>
+    );
+  }
+
+  function EnqueteContent() {
+    if (enqueteEnviado) {
+      return <div style={{color:'#FFD600'}}><b>Voto registrado!</b><br/>Obrigado por participar da enquete.<br/><button className="furia-btn" style={{marginTop:12}} onClick={()=>{setEnqueteVoto("");setEnqueteEnviado(false);setShowEnquete(false);}}>Fechar</button></div>;
+    }
+    return (
+      <div>
+        <div style={{fontWeight:600,marginBottom:8}}>{enquete.pergunta}</div>
+        <div style={{display:'flex',flexDirection:'column',gap:7}}>
+          {enquete.opcoes.map((op,i)=>(
+            <button key={i} className="furia-btn" style={{background:enqueteVoto===op?'#FFD600':'#23242b',color:enqueteVoto===op?'#181A20':'#FFD600',border:'1.5px solid #FFD600',borderRadius:7,padding:'7px 10px',fontWeight:600,fontSize:'1em'}}
+              onClick={()=>setEnqueteVoto(op)}>{op}</button>
+          ))}
+        </div>
+        <button className="furia-btn" style={{marginTop:14,background:'#FFD600',color:'#181A20',fontWeight:700,borderRadius:8,padding:'7px 18px',border:'2px solid #FFD600',fontSize:'1em'}}
+          disabled={!enqueteVoto} onClick={()=>setEnqueteEnviado(true)}>
+          Enviar voto
+        </button>
+      </div>
+    );
+  }
+  // Banner Whatsapp FURIA
+  const whatsappBanner = (
+    <div style={{
+      background: 'linear-gradient(90deg,#181A20 70%,#25D366 100%)',
+      color: '#fff',
+      borderRadius: 10,
+      padding: '10px 18px',
+      margin: '0px 7px 14px auto',
+      maxWidth: 590,
+      boxShadow: '0 2px 12px #25D36622, 0 1.5px 6px #0008',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 16,
+      fontWeight: 500,
+      fontSize: '1.08em',
+      border: '2px solid #25D366',
+      justifyContent: 'center'
+    }}>
+      <span style={{fontSize:'1.28em',marginRight:8}}>💬</span>
+      Referência do Contato Inteligente da FURIA no WhatsApp (closed beta):
+      <a href="https://wa.me/5511993404466" target="_blank" rel="noopener noreferrer" style={{
+        marginLeft: 12,
+        color: '#25D366',
+        background: '#fff',
+        borderRadius: 5,
+        padding: '2px 10px',
+        fontWeight: 700,
+        textDecoration: 'none',
+        fontSize: '1.04em',
+        boxShadow: '0 1px 6px #25D36622',
+        transition: 'background 0.15s, color 0.15s',
+        border: '1.5px solid #25D366'
+      }}>Abrir WhatsApp</a>
+    </div>
+  );
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [sendBounce, setSendBounce] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const [erroChat, setErroChat] = useState("");
+  const chatEndRef = React.useRef(null);
 
-  function handleSendWithBounce(e) {
-    if (handleSend) handleSend(e);
-    setSendBounce(true);
-    setTimeout(() => setSendBounce(false), 300);
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  async function handleSendWithBounce(e) {
+    e.preventDefault();
+    setErroChat("");
+    // Filtro de palavras proibidas
+    const palavrasProibidas = ["palavrão1","palavrão2","idiota","burro","otário","merda","bosta","fdp","pqp","caralho","puta","porra","desgraça","maldito","maldita"];
+    if (msg && palavrasProibidas.some(p => msg.toLowerCase().includes(p))) {
+      setErroChat("Sua mensagem contém palavras inadequadas. Por favor, seja respeitoso!");
+      return;
+    }
+    setEnviando(true);
+    try {
+      if (handleSend) await handleSend(e);
+      setSendBounce(true);
+      setTimeout(() => setSendBounce(false), 300);
+    } catch { 
+      setErroChat("Erro ao enviar mensagem. Tente novamente.");
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
     <main className="furia-mainchat">
+      {whatsappBanner}
       <LiveStatus status={liveStatus} />
       <div className="furia-card" id="chatbox" style={{ minHeight: 320, maxHeight: 360, overflowY: 'auto', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {loading ? (
-          <span style={{ color: '#FFD600', fontSize: '1.1rem', width: '100%', textAlign: 'center' }}>Carregando...</span>
+          <div className="furia-skeleton-loader" style={{width:'100%',height:180,display:'flex',alignItems:'center',justifyContent:'center'}}>
+            <div className="furia-skeleton-msg" style={{width:'80%',height:24,background:'#FFD60022',borderRadius:6,marginBottom:10}}></div>
+            <div className="furia-skeleton-msg" style={{width:'60%',height:24,background:'#FFD60022',borderRadius:6}}></div>
+          </div>
         ) : !user ? (
           <div style={{ color: '#FFD600', textAlign: 'center', width: '100%', fontSize: '1.13rem', fontWeight: 500, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
             <div>Faça login para visualizar as mensagens do chat!</div>
@@ -259,22 +447,40 @@ export default function MainChat({ user, messages, handleSend, msg, setMsg, hand
         ) : (
           <div className="furia-messages-list">
             {messages.map((m, idx) => (
-              <Message
-                key={m.id || idx}
-                m={m}
-                isOwn={user && m.uid === user.uid}
-                topFan={topFan}
-              />
+              <div key={m.id || idx} style={{position:'relative'}}>
+                <Message
+                  m={m}
+                  isOwn={user && m.uid === user.uid}
+                  topFan={topFan}
+                />
+
+              </div>
             ))}
           </div>
         )}
       </div>
       {user ? (
         <div>
+          {erroChat && <div style={{color:'#FFD600',background:'#23242b',padding:'7px 14px',borderRadius:8,marginBottom:8,fontWeight:600}}>{erroChat}</div>}
           {/* Sugestões automáticas para #bot-ajuda */}
           {window.location.hash === '#bot-ajuda' && (
             <BotAjudaModalidadesWrapper msg={msg} setMsg={setMsg} user={user} modalidade={modalidade} setModalidade={setModalidade} />
           )}
+          {/* Botões de acesso rápido para Quiz e Enquete */}
+          <div style={{display:'flex',gap:12,marginBottom:14}}>
+            <button type="button" className="furia-btn" style={{background:'#FFD600',color:'#181A20',fontWeight:700,borderRadius:8,padding:'7px 18px',border:'2px solid #FFD600',fontSize:'1em',boxShadow:'0 1px 6px #FFD60033'}} onClick={()=>setShowQuiz(true)}>
+              🧠 Iniciar Quiz
+            </button>
+            <button type="button" className="furia-btn" style={{background:'#FFD600',color:'#181A20',fontWeight:700,borderRadius:8,padding:'7px 18px',border:'2px solid #FFD600',fontSize:'1em',boxShadow:'0 1px 6px #FFD60033'}} onClick={()=>setShowEnquete(true)}>
+              📊 Responder Enquete
+            </button>
+          </div>
+          <QuizEnqueteModal open={showQuiz} onClose={()=>setShowQuiz(false)} title="Quiz FURIA">
+            <QuizContent />
+          </QuizEnqueteModal>
+          <QuizEnqueteModal open={showEnquete} onClose={()=>setShowEnquete(false)} title="Enquete FURIA">
+            <EnqueteContent />
+          </QuizEnqueteModal>
           <div className="furia-chat-box-wrap">
             <form className="furia-chat-form" onSubmit={handleSendWithBounce}>
               <input
@@ -286,8 +492,10 @@ export default function MainChat({ user, messages, handleSend, msg, setMsg, hand
                 autoFocus
                 tabIndex={0}
                 aria-label="Digite sua mensagem"
+                disabled={enviando}
               />
-              <button className={`furia-send-btn${sendBounce ? ' bounceSend' : ''}`} type="submit" aria-label="Enviar mensagem" tabIndex={0}>
+              <button className={`furia-send-btn${sendBounce ? ' bounceSend' : ''}`} type="submit" aria-label="Enviar mensagem" tabIndex={0} disabled={enviando}>
+                {enviando ? <span className="furia-send-spinner" style={{marginRight:6,verticalAlign:'middle',display:'inline-block',width:16,height:16,border:'2px solid #FFD600',borderTop:'2px solid transparent',borderRadius:'50%',animation:'spin 0.7s linear infinite'}}></span> : null}
                 Enviar
               </button>
               <button
@@ -335,6 +543,7 @@ export default function MainChat({ user, messages, handleSend, msg, setMsg, hand
                 </button>
               ))}
             </div>
+            <div ref={chatEndRef}></div>
           </div>
         </div>
       ) : null}

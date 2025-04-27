@@ -1,4 +1,7 @@
-// Sugestões automáticas para o canal #bot-ajuda
+/**
+ * Sugestões automáticas para o canal #bot-ajuda
+ * @type {string[]}
+ */
 export const botFaqSuggestions = [
   'Quando é o próximo jogo?',
   'Qual o placar do último jogo?',

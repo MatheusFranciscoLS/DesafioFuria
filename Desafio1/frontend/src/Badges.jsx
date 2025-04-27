@@ -9,6 +9,11 @@ const BADGES = [
   { id: 'mito', name: 'MITO', icon: '🦁', min: 100 },
 ];
 
+/**
+ * Retorna o badge correspondente ao número de mensagens do fã.
+ * @param {number} count - Quantidade de mensagens
+ * @returns {{id: string, name: string, icon: string, min: number}} Badge correspondente
+ */
 export function getBadge(count) {
   let badge = BADGES[0];
   for (const b of BADGES) {
@@ -17,6 +22,12 @@ export function getBadge(count) {
   return badge;
 }
 
+/**
+ * Exibe o badge visual do fã de acordo com o número de mensagens.
+ * @param {{ count: number }} props
+ *   - count: quantidade de mensagens do fã
+ * @returns {JSX.Element} Badge visual
+ */
 export default function Badges({ count }) {
   const badge = getBadge(count);
   return (

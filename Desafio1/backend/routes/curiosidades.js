@@ -3,7 +3,10 @@ const router = express.Router();
 const db = require('../firebase');
 const admin = require('firebase-admin');
 
-// Middleware de autenticação Firebase
+/**
+ * Middleware de autenticação Firebase
+ * Verifica o token Bearer e adiciona o usuário autenticado em req.user
+ */
 async function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -25,8 +28,25 @@ const { resolveModalidade } = require('../utils/modalidadeSynonyms');
 const Joi = require('joi');
 const { validateModalidade } = require('../utils/validators');
 
+/**
+ * GET curiosidades por modalidade
+ * Query params: page, limit
+ * @route GET /:modalidade
+ */
+/**
+ * GET curiosidades por modalidade
+ * Retorna erro amigável se o parâmetro não for uma modalidade válida.
+ * @route GET /:modalidade
+ */
 router.get('/:modalidade', async (req, res, next) => {
-  const mod = resolveModalidade(req.params.modalidade);
+  const modalidadeParam = req.params.modalidade.toLowerCase();
+  const modalidadesValidas = [
+    'cs2','csgo','valorant','lol','rocketleague','apex','rainbowsix','kingsleague','fifa'
+  ];
+  if (!modalidadeParam || modalidadeParam === 'help' || modalidadeParam === 'comandos' || !modalidadesValidas.includes(modalidadeParam)) {
+    return res.status(400).json({ erro: 'Informe uma modalidade válida para consultar curiosidades. Consulte /modalidades para ver as opções.' });
+  }
+  const mod = resolveModalidade(modalidadeParam);
   const { page = 1, limit = 20 } = req.query;
   const { error } = validateModalidade(mod);
   if (error) return res.status(400).json({ erro: 'Modalidade inválida' });
@@ -48,6 +68,11 @@ router.get('/:modalidade', async (req, res, next) => {
 });
 
 // POST - adicionar curiosidades de uma modalidade
+/**
+ * POST - adicionar curiosidades de uma modalidade
+ * @route POST /:modalidade
+ * @access Authenticated
+ */
 router.post('/:modalidade', authenticate, async (req, res) => {
   const mod = req.params.modalidade.toLowerCase();
   const { curiosidades } = req.body;
@@ -63,6 +88,11 @@ router.post('/:modalidade', authenticate, async (req, res) => {
 });
 
 // PUT - atualizar curiosidades de uma modalidade
+/**
+ * PUT - atualizar curiosidades de uma modalidade
+ * @route PUT /:modalidade
+ * @access Authenticated
+ */
 router.put('/:modalidade', authenticate, async (req, res) => {
   const mod = req.params.modalidade.toLowerCase();
   const { curiosidades } = req.body;
@@ -78,6 +108,11 @@ router.put('/:modalidade', authenticate, async (req, res) => {
 });
 
 // DELETE - remover curiosidades de uma modalidade
+/**
+ * DELETE - remover curiosidades de uma modalidade
+ * @route DELETE /:modalidade
+ * @access Authenticated
+ */
 router.delete('/:modalidade', authenticate, async (req, res) => {
   const mod = req.params.modalidade.toLowerCase();
   try {

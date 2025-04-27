@@ -13,7 +13,7 @@ async function seed() {
   // Modalidades (do furia-modalidades.js)
   await db.collection('modalidades').doc('list').set({
     modalidades: [
-      'cs2', 'valorant', 'rainbowsix', 'fifa', 'kingsleague', 'apex', 'lol', 'rocketleague'
+      'cs2', 'valorant', 'rainbowsix', 'apex', 'lol', 'rocketleague', 'pubg', 'futebol7'
     ]
   });
 

@@ -2,9 +2,9 @@
   { "titulo": "FURIA vence NAVI no Major de CS2!", "data": "2025-04-20", "modalidade": "cs2" },
   { "titulo": "Nova line-up de Valorant anunciada", "data": "2025-04-19", "modalidade": "valorant" },
   { "titulo": "FURIA faz jogo épico contra Liquid no Rainbow Six", "data": "2025-04-18", "modalidade": "rainbowsix" },
-  { "titulo": "FURIA conquista título no e-Brasileirão de FIFA", "data": "2025-04-17", "modalidade": "fifa" },
-  { "titulo": "Fred marca golaço pela FURIA na Kings League", "data": "2025-04-16", "modalidade": "kingsleague" },
   { "titulo": "FURIA garante vaga nas finais da ALGS de Apex", "data": "2025-04-15", "modalidade": "apex" },
   { "titulo": "FURIA avança para playoffs do CBLOL", "data": "2025-04-14", "modalidade": "lol" },
-  { "titulo": "FURIA conquista título no Rocket League", "data": "2025-04-13", "modalidade": "rocketleague" }
+  { "titulo": "FURIA conquista título no Rocket League", "data": "2025-04-13", "modalidade": "rocketleague" },
+  { "titulo": "FURIA é campeã do PUBG Global Series!", "data": "2025-04-12", "modalidade": "pubg" },
+  { "titulo": "FURIA estreia com vitória no Futebol 7", "data": "2025-04-11", "modalidade": "futebol7" }
 ]

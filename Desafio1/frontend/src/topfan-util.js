@@ -1,4 +1,8 @@
-// Retorna o nome do usuário Top 1 a partir do array de mensagens
+/**
+ * Retorna o nome do usuário Top 1 a partir do array de mensagens
+ * @param {Array} messages - Lista de mensagens do chat
+ * @returns {string|null}
+ */
 export function getTopFan(messages) {
   if (!messages || !messages.length) return null;
   const counts = {};

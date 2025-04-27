@@ -1,3 +1,8 @@
+/**
+ * index.js - Backend principal da API FURIA GG
+ * Inicializa servidor Express, integra Firebase, middlewares, rotas e documentação Swagger.
+ */
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
@@ -5,7 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
 const app = express();
-const PORT = 5000;
+const PORT = 3031;
 
 // Firebase Admin SDK init
 try {
@@ -38,6 +43,15 @@ app.use('/api/', rateLimiter);
 // Documentação Swagger
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// Rotas principais da API
+app.use('/api/curiosidades', require('./routes/curiosidades'));
+app.use('/api/elenco', require('./routes/elenco'));
+app.use('/api/estatisticas', require('./routes/estatisticas'));
+app.use('/api/jogos', require('./routes/jogos'));
+app.use('/api/modalidades', require('./routes/modalidades'));
+app.use('/api/noticias', require('./routes/noticias'));
+app.use('/api/placares', require('./routes/placares'));
+
 // Log detalhado de requisições
 app.use((req, res, next) => {
   const start = Date.now();
@@ -49,42 +63,67 @@ app.use((req, res, next) => {
 });
 
 
-// Mock endpoint para status de jogos
-app.get('/api/live-status', (req, res) => {
-  res.json({
-    match: 'FURIA vs NAVI',
-    status: 'Em andamento',
-    score: '8-6',
-    round: 15,
-    time: '10:45',
-    map: 'Mirage'
-  });
+// Endpoint para status de jogos por modalidade
+const { getFuriaLiveStatusLiquipedia } = require('./liquipedia');
+const { getFuriaLiveStatus } = require('./hltv');
+const { getFuriaKingsLeagueStatus } = require('./kingsleague');
+const { getFuriaLiveStatusPandascore } = require('./pandascore');
+const { getFuriaRainbowSixStatusSiegeGG } = require('./siegegg');
+const { getFuriaRocketLeagueStatus } = require('./rocketleaguegg');
+const { getFuriaApexStatus } = require('./apexgg');
+const { getFuriaFifaStatus } = require('./fifagg');
+
+app.get('/api/live-status', async (req, res) => {
+  const modalidade = (req.query.modalidade || '').toLowerCase();
+  const pandascoreToken = req.query.token || process.env.PANDASCORE_TOKEN;
+  try {
+    // CS2, Valorant e LoL via Pandascore
+    if (["cs2", "valorant", "lol"].includes(modalidade)) {
+      try {
+        const statusPanda = await getFuriaLiveStatusPandascore(modalidade, pandascoreToken);
+        if (statusPanda && statusPanda.match && statusPanda.status) return res.status(200).json(statusPanda);
+      } catch (err) {
+        console.error('[API] Erro ao buscar status Pandascore:', err.message);
+      }
+    }
+    // Demais modalidades: buscar no mock_games.json
+    try {
+      const fs = require('fs');
+      const mockGames = JSON.parse(fs.readFileSync(__dirname + '/mock_games.json', 'utf-8'));
+      const mock = mockGames.find(g => g.modalidade === modalidade);
+      if (mock) {
+        console.log(`[API] ${modalidade}: dado mock usado:`, mock);
+        return res.status(200).json(mock);
+      }
+    } catch (err) {
+      console.error(`[API] Erro ao ler mock_games.json para ${modalidade}:`, err.message);
+    }
+    // Fallback para resposta padrão
+    return res.status(200).json({
+      match: 'FURIA',
+      status: 'Sem partidas futuras ou erro ao buscar status',
+      score: '-',
+      round: null,
+      time: '',
+      map: '-',
+      event: '-',
+      date: ''
+    });
+  } catch (e) {
+    console.error('[API] Erro inesperado no endpoint /api/live-status:', e.message);
+    res.status(200).json({
+      match: 'FURIA',
+      status: 'Erro inesperado ao buscar status ao vivo',
+      score: '-',
+      round: null,
+      time: '',
+      map: '-',
+      event: '-',
+      date: ''
+    });
+  }
 });
-
-app.get('/', (req, res) => {
-  res.send('Backend FURIA Fan Chat rodando!');
-});
-
-// Modular routes
-app.use('/api/elenco', require('./routes/elenco'));
-app.use('/api/jogos', require('./routes/jogos'));
-app.use('/api/placares', require('./routes/placares'));
-app.use('/api/estatisticas', require('./routes/estatisticas'));
-app.use('/api/curiosidades', require('./routes/curiosidades'));
-app.use('/api/noticias', require('./routes/noticias'));
-app.use('/api/modalidades', require('./routes/modalidades'));
-
-
-// 404 handler para rotas não encontradas
-app.use((req, res, next) => {
-  res.status(404).json({ erro: 'Endpoint não encontrado' });
-});
-
-// Middleware de tratamento global de erros
-const errorHandler = require('./middleware/errorHandler');
-app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Servidor backend rodando na porta ${PORT}`);
+  console.log(`Servidor iniciado na porta ${PORT}`);
 });
-

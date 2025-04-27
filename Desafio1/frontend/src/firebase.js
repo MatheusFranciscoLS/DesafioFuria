@@ -1,4 +1,7 @@
-// firebase.js - Inicialização do Firebase para uso no React
+/**
+ * firebase.js - Inicialização do Firebase para uso no React
+ * Exporta instâncias do Firestore, Auth e provedores de login para uso nos componentes.
+ */
 // Importa funções necessárias do SDK
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";

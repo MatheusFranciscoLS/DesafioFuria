@@ -3,12 +3,27 @@ import { db } from "./firebase";
 import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, limit } from "firebase/firestore";
 import Badges from "./Badges";
 
+/**
+ * Formata um timestamp Firestore para hora:minuto.
+ * @param {object} ts - Timestamp do Firestore
+ * @returns {string} Hora formatada
+ */
 function formatTime(ts) {
   if (!ts) return "";
   const date = ts.seconds ? new Date(ts.seconds * 1000) : new Date();
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
+/**
+ * Mural de Recados - permite usuários deixarem mensagens públicas.
+ * Exibe últimos recados, badge de fãs e formulário de envio.
+ *
+ * @param {object} props
+ *   - user: usuário logado
+ *   - topFanUid: UID do top fã
+ *   - topFansArr: lista dos top fãs (opcional)
+ * @returns {JSX.Element} Mural de recados renderizado
+ */
 export default function MuralRecados({ user, topFanUid, topFansArr = [] }) {
   const [recado, setRecado] = useState("");
   const [recados, setRecados] = useState([]);

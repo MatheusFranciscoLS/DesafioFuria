@@ -1,3 +1,7 @@
+/**
+ * Rotas para gerenciamento de modalidades (CRUD)
+ * Permite listar, adicionar, atualizar e deletar modalidades esportivas.
+ */
 const express = require('express');
 const router = express.Router();
 const db = require('../firebase');
@@ -5,7 +9,10 @@ const admin = require('firebase-admin');
 const { modalidadeMap } = require('../utils/modalidadeSynonyms');
 const { fuzzySearchModalidade } = require('../utils/fuzzyModalidade');
 
-// Middleware de autenticação Firebase
+/**
+ * Middleware de autenticação Firebase
+ * Verifica o token Bearer e adiciona o usuário autenticado em req.user
+ */
 async function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -22,9 +29,23 @@ async function authenticate(req, res, next) {
 }
 
 // GET - listar todas as modalidades
+/**
+ * GET - listar todas as modalidades
+ * @route GET /
+ */
+/**
+ * GET modalidades
+ * Retorna erro amigável se houver query inválida (ex: comandos reservados).
+ * @route GET /
+ */
 router.get('/', async (req, res) => {
   try {
     const snapshot = await db.collection('modalidades').get();
+    // Tratamento para comandos reservados como query
+    const { comando } = req.query;
+    if (comando === 'help' || comando === 'comandos') {
+      return res.status(400).json({ erro: 'Consulta inválida. Veja os comandos disponíveis em /help.' });
+    }
     const modalidades = snapshot.docs.map(doc => doc.id);
     res.json({ modalidades });
   } catch (e) {
@@ -33,6 +54,11 @@ router.get('/', async (req, res) => {
 });
 
 // POST - adicionar modalidade
+/**
+ * POST - adicionar modalidade
+ * @route POST /
+ * @access Authenticated
+ */
 router.post('/', authenticate, async (req, res) => {
   const { nome } = req.body;
   if (!nome) {
@@ -47,6 +73,11 @@ router.post('/', authenticate, async (req, res) => {
 });
 
 // PUT - atualizar modalidade
+/**
+ * PUT - atualizar modalidade
+ * @route PUT /:nome
+ * @access Authenticated
+ */
 router.put('/:nome', authenticate, async (req, res) => {
   const { nome } = req.params;
   const { novoNome } = req.body;
@@ -68,6 +99,11 @@ router.put('/:nome', authenticate, async (req, res) => {
 });
 
 // DELETE - remover modalidade
+/**
+ * DELETE - remover modalidade
+ * @route DELETE /:nome
+ * @access Authenticated
+ */
 router.delete('/:nome', authenticate, async (req, res) => {
   const { nome } = req.params;
   try {

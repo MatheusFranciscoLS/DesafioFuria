@@ -1,6 +1,11 @@
 import React from "react";
 import { BOT_NAME, BOT_PHOTO } from "./torcida-bot";
 
+/**
+ * Formata o timestamp para exibição de hora (pt-BR)
+ * @param {object|number} ts - Timestamp Firestore ou epoch
+ * @returns {string}
+ */
 function formatTime(ts) {
   if (!ts) return "";
   const date = ts.seconds ? new Date(ts.seconds * 1000) : new Date();
@@ -8,6 +13,10 @@ function formatTime(ts) {
 }
 
 
+/**
+ * Componente de mensagem individual no chat
+ * @param {{m: object, isOwn: boolean, topFan?: boolean}} props
+ */
 export default function Message({ m, isOwn, topFan }) {
   const isTopFan = topFan && m.user === topFan;
   const isBot = m.user === BOT_NAME || m.uid === 'furia-bot';

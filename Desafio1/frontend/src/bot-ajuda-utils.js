@@ -1,4 +1,8 @@
-// Utilitários para #bot-ajuda: histórico local, filtro, tópicos populares, tooltips
+/**
+ * Salva o histórico de perguntas do usuário localmente
+ * @param {string} userId - ID do usuário
+ * @param {string} question - Pergunta feita
+ */
 export function saveUserFaqHistory(userId, question) {
   if (!userId) return;
   let hist = JSON.parse(localStorage.getItem('faqHistory_' + userId) || '[]');
@@ -6,14 +10,29 @@ export function saveUserFaqHistory(userId, question) {
   hist = hist.slice(0, 10);
   localStorage.setItem('faqHistory_' + userId, JSON.stringify(hist));
 }
+/**
+ * Recupera o histórico de perguntas do usuário
+ * @param {string} userId - ID do usuário
+ * @returns {Array}
+ */
 export function getUserFaqHistory(userId) {
   if (!userId) return [];
   return JSON.parse(localStorage.getItem('faqHistory_' + userId) || '[]');
 }
+/**
+ * Filtra sugestões de FAQ pelo texto de busca
+ * @param {Array<string>} suggestions
+ * @param {string} query
+ * @returns {Array<string>}
+ */
 export function filterFaqSuggestions(suggestions, query) {
   if (!query) return suggestions;
   return suggestions.filter(s => s.toLowerCase().includes(query.toLowerCase()));
 }
+/**
+ * Retorna tópicos populares do FAQ simulados
+ * @returns {Array<string>}
+ */
 export function getPopularFaqTopics() {
   // Simulação: tópicos mais usados (poderia vir do backend futuramente)
   return [
@@ -23,6 +42,11 @@ export function getPopularFaqTopics() {
     'Quais comandos posso usar?'
   ];
 }
+/**
+ * Retorna o tooltip customizado para uma sugestão de FAQ
+ * @param {string} suggestion
+ * @returns {string}
+ */
 export function getFaqTooltip(suggestion) {
   // Tooltips customizados para sugestões
   const tooltips = {

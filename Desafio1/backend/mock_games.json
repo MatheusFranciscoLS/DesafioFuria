@@ -1,0 +1,90 @@
+[
+  {
+    "modalidade": "apex",
+    "match": "FURIA vs TSM",
+    "status": "Em andamento",
+    "score": "-",
+    "round": 2,
+    "time": "18:30",
+    "map": "World's Edge",
+    "event": "ALGS Split 2",
+    "date": "2025-04-27"
+  },
+  {
+    "modalidade": "cs2",
+    "match": "FURIA vs NAVI",
+    "status": "Agendado",
+    "score": "-",
+    "round": null,
+    "time": "21:00",
+    "map": "Mirage",
+    "event": "Major Paris",
+    "date": "2025-05-01"
+  },
+  {
+    "modalidade": "futebol7",
+    "match": "FURIA vs Corinthians",
+    "status": "Agendado",
+    "score": "-",
+    "round": null,
+    "time": "20:00",
+    "map": "Arena F7",
+    "event": "Copa Fut7",
+    "date": "2025-05-02"
+  },
+  {
+    "modalidade": "lol",
+    "match": "FURIA vs paiN Gaming",
+    "status": "Finalizado",
+    "score": "2-1",
+    "round": "Playoffs",
+    "time": "18:00",
+    "map": "Summoner's Rift",
+    "event": "CBLOL",
+    "date": "2025-04-25"
+  },
+  {
+    "modalidade": "pubg",
+    "match": "FURIA vs FaZe Clan",
+    "status": "Agendado",
+    "score": "-",
+    "round": null,
+    "time": "16:00",
+    "map": "Erangel",
+    "event": "PUBG Global Series",
+    "date": "2025-05-03"
+  },
+  {
+    "modalidade": "rainbowsix",
+    "match": "FURIA vs Team Liquid",
+    "status": "Agendado",
+    "score": "-",
+    "round": null,
+    "time": "19:00",
+    "map": "Consulate",
+    "event": "Brasileirão R6",
+    "date": "2025-04-28"
+  },
+  {
+    "modalidade": "rocketleague",
+    "match": "FURIA vs G2 Esports",
+    "status": "Finalizado",
+    "score": "3-2",
+    "round": null,
+    "time": "17:00",
+    "map": "DFH Stadium",
+    "event": "RLCS South America",
+    "date": "2025-04-25"
+  },
+  {
+    "modalidade": "valorant",
+    "match": "FURIA vs LOUD",
+    "status": "Agendado",
+    "score": "-",
+    "round": null,
+    "time": "20:30",
+    "map": "Ascent",
+    "event": "VCT Americas",
+    "date": "2025-05-04"
+  }
+]

@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { CHANNELS } from "./ChannelSelector.jsx";
 import Badges from "./Badges";
 import MuralRecados from "./MuralRecados";
+import JogosAgendaModal from "./JogosAgendaModal";
+import PlacaresModal from "./PlacaresModal";
 
 export default function Sidebar({ channel, setChannel, topFans, user }) {
+  const [openJogos, setOpenJogos] = useState(false);
+  const [openPlacares, setOpenPlacares] = useState(false);
   return (
     <aside className="furia-sidebar">
       <div className="furia-sidebar-section">
@@ -21,6 +25,22 @@ export default function Sidebar({ channel, setChannel, topFans, user }) {
             </button>
           ))}
         </div>
+        <button
+          className="furia-jogos-btn"
+          style={{marginTop:14,background:'#FFD600',color:'#222',border:'none',borderRadius:6,padding:'8px 16px',fontWeight:600,cursor:'pointer',width:'100%'}}
+          onClick={() => setOpenJogos(true)}
+        >
+          🏆 Agenda de Jogos
+        </button>
+        <button
+          className="furia-placares-btn"
+          style={{marginTop:8,background:'#FFD600',color:'#222',border:'none',borderRadius:6,padding:'8px 16px',fontWeight:600,cursor:'pointer',width:'100%'}}
+          onClick={() => setOpenPlacares(true)}
+        >
+          📊 Placares Recentes
+        </button>
+        <JogosAgendaModal open={openJogos} onClose={() => setOpenJogos(false)} />
+        <PlacaresModal open={openPlacares} onClose={() => setOpenPlacares(false)} />
       </div>
 
       {channel !== 'bot-ajuda' && (

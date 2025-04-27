@@ -3,7 +3,10 @@ const router = express.Router();
 const db = require('../firebase');
 const admin = require('firebase-admin');
 
-// Middleware de autenticação Firebase
+/**
+ * Middleware de autenticação Firebase
+ * Verifica o token Bearer e adiciona o usuário autenticado em req.user
+ */
 async function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -22,6 +25,16 @@ async function authenticate(req, res, next) {
 // GET estatísticas de jogador
 const { resolveModalidade } = require('../utils/modalidadeSynonyms');
 
+/**
+ * GET estatísticas de jogador
+ * Query param opcional: modalidade
+ * @route GET /:jogador
+ */
+/**
+ * GET estatísticas de um jogador.
+ * Se o parâmetro não for um jogador válido, retorna erro explicativo.
+ * @route GET /:jogador
+ */
 router.get('/:jogador', async (req, res) => {
   const nick = req.params.jogador.toLowerCase();
   const { modalidade } = req.query;
@@ -44,6 +57,11 @@ router.get('/:jogador', async (req, res) => {
 });
 
 // POST - adicionar estatísticas de jogador
+/**
+ * POST - adicionar estatísticas de jogador
+ * @route POST /:jogador
+ * @access Authenticated
+ */
 router.post('/:jogador', authenticate, async (req, res) => {
   const nick = req.params.jogador.toLowerCase();
   const { modalidade, ...stats } = req.body;
@@ -59,6 +77,11 @@ router.post('/:jogador', authenticate, async (req, res) => {
 });
 
 // PUT - atualizar estatísticas de jogador
+/**
+ * PUT - atualizar estatísticas de jogador
+ * @route PUT /:jogador
+ * @access Authenticated
+ */
 router.put('/:jogador', authenticate, async (req, res) => {
   const nick = req.params.jogador.toLowerCase();
   const { modalidade, ...stats } = req.body;
@@ -74,10 +97,25 @@ router.put('/:jogador', authenticate, async (req, res) => {
 });
 
 // DELETE - remover estatísticas de jogador
+/**
+ * DELETE - remover estatísticas de jogador
+ * @route DELETE /:jogador
+ * @access Authenticated
+ * @description Remove as estatísticas de um jogador. Se o parâmetro não for um jogador válido, retorna erro explicativo.
+ */
 router.delete('/:jogador', authenticate, async (req, res) => {
-  const nick = req.params.jogador.toLowerCase();
+  const jogador = req.params.jogador.toLowerCase();
+
+  // Tratamento: impedir consulta por modalidade e comandos reservados
+  const modalidades = [
+    'cs2', 'csgo', 'valorant', 'lol', 'rocketleague', 'apex', 'rainbowsix', 'kingsleague', 'fifa'
+  ];
+  if (!jogador || jogador === 'help' || jogador === 'comandos' || modalidades.includes(jogador)) {
+    return res.status(400).json({ erro: 'Informe um jogador válido para consultar estatísticas. Consulte /elenco para ver os jogadores.' });
+  }
+
   try {
-    await db.collection('estatisticas').doc(nick).delete();
+    await db.collection('estatisticas').doc(jogador).delete();
     res.json({ mensagem: 'Estatísticas removidas com sucesso' });
   } catch (e) {
     res.status(500).json({ erro: 'Erro ao remover estatísticas', detalhes: e.message });

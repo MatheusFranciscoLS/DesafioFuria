@@ -1,5 +1,9 @@
 import React from "react";
 
+/**
+ * Exibe o status ao vivo de uma partida
+ * @param {{status: object}} props
+ */
 export default function LiveStatus({ status }) {
   if (!status) return null;
   return (

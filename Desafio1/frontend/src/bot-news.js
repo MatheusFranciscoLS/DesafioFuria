@@ -1,5 +1,8 @@
-// Notícias e novidades oficiais da FURIA GG para exibir no chat
-// Em produção, idealmente alimentado por API ou painel admin
+/**
+ * Notícias e novidades oficiais da FURIA GG para exibir no chat
+ * Em produção, idealmente alimentado por API ou painel admin
+ * @type {{title: string, date: string, content: string, link: string}[]}
+ */
 export const furiaNews = [
   {
     title: "FURIA vence clássico!",
