@@ -1,0 +1,16 @@
+{
+  "placares": [
+    {"modalidade": "CS", "adversario": "NAVI", "data": "25/04/2025", "resultado": "16x11", "torneio": "BLAST Premier"},
+    {"modalidade": "Valorant", "adversario": "Sentinels", "data": "24/04/2025", "resultado": "13x8", "torneio": "Champions Tour"},
+    {"modalidade": "Rocket League", "adversario": "FaZe Clan", "data": "23/04/2025", "resultado": "3x2", "torneio": "RLCS"},
+    {"modalidade": "Rainbow Six", "adversario": "Black Dragons", "data": "22/04/2025", "resultado": "7x5", "torneio": "BR6"},
+    {"modalidade": "Kings League", "adversario": "Rayo de Barcelona", "data": "21/04/2025", "resultado": "4x3", "torneio": "Kings League InfoJobs"},
+    {"modalidade": "CS", "adversario": "MIBR", "data": "20/04/2025", "resultado": "16x14", "torneio": "CBCS"},
+    {"modalidade": "Valorant", "adversario": "NIP", "data": "19/04/2025", "resultado": "14x12", "torneio": "VCT"},
+    {"modalidade": "Rocket League", "adversario": "Team BDS", "data": "18/04/2025", "resultado": "2x3", "torneio": "RLCS"},
+    {"modalidade": "Rainbow Six", "adversario": "FaZe Clan", "data": "17/04/2025", "resultado": "8x7", "torneio": "BR6"},
+    {"modalidade": "Kings League", "adversario": "Porcinos FC", "data": "16/04/2025", "resultado": "5x5", "torneio": "Kings League InfoJobs"},
+    {"modalidade": "CS", "adversario": "Imperial", "data": "15/04/2025", "resultado": "9x16", "torneio": "IEM"},
+    {"modalidade": "Valorant", "adversario": "KRÜ", "data": "14/04/2025", "resultado": "11x13", "torneio": "Champions Tour"}
+  ]
+}

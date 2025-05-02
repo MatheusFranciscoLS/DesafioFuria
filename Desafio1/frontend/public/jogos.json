@@ -1,0 +1,16 @@
+{
+  "jogos": [
+    {"modalidade": "CS", "adversario": "Team Liquid", "data": "01/05/2025", "hora": "18:00", "torneio": "BLAST Premier"},
+    {"modalidade": "Valorant", "adversario": "LOUD", "data": "03/05/2025", "hora": "20:00", "torneio": "Champions Tour"},
+    {"modalidade": "Rocket League", "adversario": "G2 Esports", "data": "05/05/2025", "hora": "16:00", "torneio": "RLCS"},
+    {"modalidade": "Rainbow Six", "adversario": "Team oNe", "data": "07/05/2025", "hora": "21:00", "torneio": "BR6"},
+    {"modalidade": "Kings League", "adversario": "Ultimate Móstoles", "data": "10/05/2025", "hora": "19:00", "torneio": "Kings League InfoJobs"},
+    {"modalidade": "CS", "adversario": "MIBR", "data": "12/05/2025", "hora": "17:00", "torneio": "CBCS"},
+    {"modalidade": "Valorant", "adversario": "NIP", "data": "14/05/2025", "hora": "15:00", "torneio": "VCT"},
+    {"modalidade": "Rocket League", "adversario": "Team BDS", "data": "16/05/2025", "hora": "14:00", "torneio": "RLCS"},
+    {"modalidade": "Rainbow Six", "adversario": "FaZe Clan", "data": "18/05/2025", "hora": "20:00", "torneio": "BR6"},
+    {"modalidade": "Kings League", "adversario": "Porcinos FC", "data": "20/05/2025", "hora": "18:00", "torneio": "Kings League InfoJobs"},
+    {"modalidade": "CS", "adversario": "Imperial", "data": "22/05/2025", "hora": "19:00", "torneio": "IEM"},
+    {"modalidade": "Valorant", "adversario": "KRÜ", "data": "24/05/2025", "hora": "21:00", "torneio": "Champions Tour"}
+  ]
+}
