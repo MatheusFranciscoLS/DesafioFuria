@@ -100,10 +100,11 @@ Entretanto, há um backend Node.js pronto para futuras integrações.
 
 ### Prints do Sistema
 
-### Tela de Login![Tela de Login](./frontend/public/login.png)
+### Tela Inicio
+![Tela de Login](./frontend/public/Principal.png)
 
-### Página Inicial
-![Página Inicial](./frontend/public/home.png)
+### Página Home
+![Página Inicial](./frontend/public/Inicio.png)
 
 ### Chat em funcionamento
 ![Chat em funcionamento](./frontend/public/chat.png)
@@ -118,7 +119,7 @@ Entretanto, há um backend Node.js pronto para futuras integrações.
 ![Página de Placar](./frontend/public/placar.png)
 
 ### Modal de Agenda
-![Modal de Agenda](./frontend/public/modal.png)
+![Modal de Agenda](./frontend/public/Agenda.png)
 
 ### Página de Quiz/Enquete
 ![Página de Quiz/Enquete](./frontend/public/quiz.png)
